@@ -11,7 +11,13 @@
     <!-- Floating toolbar -->
     <div id="ison-toolbar">
         <select id="scale-selector"></select> <!-- Scale selection -->
+        
         <div id="note-buttons"></div> <!-- Dynamic note buttons -->
+        
+        <!-- Pitch slider (renamed to tonalità, lowercase, no ":") -->
+        <label id="pitch-label" for="pitch-slider">tonalità</label>
+        <input type="range" id="pitch-slider" min="0.5" max="2.0" step="0.01" value="1">
+        
         <button id="stop-btn">Stop</button> <!-- Stop button -->
     </div>
 
