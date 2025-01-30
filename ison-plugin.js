@@ -4,18 +4,21 @@ class ByzantineIson {
         this.buffers = {}; // Store loaded audio samples
         this.currentSource = null; // Track current playing note
 
-        // Byzantine scales with corrected Enharmonic scale
+        // Load saved pitch preference
+        this.pitchMultiplier = parseFloat(localStorage.getItem("isonPitch")) || 1.0;
+
+        // Byzantine scales
         this.scales = {
             "Diatonic": ["Νη", "Πα", "Βου", "Γα", "Δι", "Κε", "Ζω"],
             "Chromatic": ["Νη", "Πα", "Βου#", "Γα", "Δι#", "Κε", "Ζω"],
-            "Enharmonic": ["Νη", "Πα#", "Βου", "Γα#", "Δι", "Κε#", "Ζω"] // Fixed Πα# inclusion
+            "Enharmonic": ["Νη", "Πα#", "Βου", "Γα#", "Δι", "Κε#", "Ζω"]
         };
 
-        // Byzantine notation sound files (added Πα# reference)
+        // Byzantine notation sound files
         this.soundFiles = {
             "Νη": "samples/Νη.mp3",
             "Πα": "samples/Πα.mp3",
-            "Πα#": "samples/Πα-sharp.mp3", // 🔧 FIXED: Added Πα-sharp reference
+            "Πα#": "samples/Πα-sharp.mp3",
             "Βου": "samples/Βου.mp3",
             "Βου#": "samples/Βου-sharp.mp3",
             "Γα": "samples/Γα.mp3",
@@ -31,6 +34,7 @@ class ByzantineIson {
 
         this.initUI();
         this.loadSamples();
+        this.updateNoteButtons(); // Ensure buttons load correctly
     }
 
     async loadSamples() {
@@ -60,6 +64,7 @@ class ByzantineIson {
         const source = this.audioContext.createBufferSource();
         source.buffer = buffer;
         source.loop = true; // Loop the ison sound
+        source.playbackRate.value = this.pitchMultiplier; // Adjust pitch
         source.connect(this.audioContext.destination);
         source.start(0);
 
@@ -93,11 +98,22 @@ class ByzantineIson {
         this.updateNoteButtons();
     }
 
-    initUI() {
-        const scaleSelector = document.getElementById('scale-selector');
-        const stopButton = document.getElementById('stop-btn');
+    handlePitchChange(event) {
+        this.pitchMultiplier = parseFloat(event.target.value);
+        localStorage.setItem("isonPitch", this.pitchMultiplier); // Save user preference
 
-        // Populate scale dropdown
+        if (this.currentSource) {
+            this.currentSource.playbackRate.value = this.pitchMultiplier; // Apply new pitch
+        }
+    }
+
+    initUI() {
+        document.getElementById('scale-selector').addEventListener('change', (e) => this.handleScaleChange(e));
+        document.getElementById('pitch-slider').addEventListener('input', (e) => this.handlePitchChange(e));
+        document.getElementById('stop-btn').onclick = () => this.stopIson();
+        
+        // Populate scale selector on startup
+        const scaleSelector = document.getElementById('scale-selector');
         Object.keys(this.scales).forEach(scale => {
             const option = document.createElement('option');
             option.value = scale;
@@ -106,12 +122,7 @@ class ByzantineIson {
         });
 
         scaleSelector.value = this.selectedScale;
-        scaleSelector.addEventListener('change', (event) => this.handleScaleChange(event));
-
-        stopButton.onclick = () => this.stopIson();
-
-        // Initialize note buttons
-        this.updateNoteButtons();
+        this.updateNoteButtons(); // Ensure buttons load on startup
     }
 }
 
