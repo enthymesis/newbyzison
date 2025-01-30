@@ -5,24 +5,45 @@
     right: 20px;
     background: #222;
     color: white;
-    padding: 10px;
+    padding: 15px;
     border-radius: 10px;
     display: flex;
     flex-direction: column;
     align-items: center;
+    gap: 12px; /* Increased spacing for better readability */
+    font-family: Helvetica, Arial, sans-serif; /* Set font */
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    max-width: 90vw; /* Ensure it fits mobile screens */
+    width: 250px;
 }
 
-#scale-selector {
-    margin-bottom: 10px;
+/* Responsive Design for Mobile */
+@media (max-width: 600px) {
+    #ison-toolbar {
+        right: 10px;
+        bottom: 10px;
+        width: 90vw;
+        padding: 12px;
+    }
+
+    #note-buttons {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+}
+
+#scale-selector, #pitch-slider {
     padding: 5px;
     font-size: 16px;
+    width: 100%;
 }
 
 #note-buttons {
     display: flex;
-    gap: 5px;
-    margin-bottom: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px; /* Slightly more spacing for better usability */
+    margin-bottom: 10px; /* Add space between buttons and tonalità */
 }
 
 .ison-btn {
@@ -33,10 +54,18 @@
     background: #444;
     color: white;
     border-radius: 5px;
+    flex: 1;
+    min-width: 40px; /* Ensure buttons are touch-friendly */
 }
 
 .ison-btn:hover {
     background: #666;
+}
+
+#pitch-label {
+    font-size: 14px;
+    color: white;
+    margin-bottom: -5px; /* Adjusted spacing */
 }
 
 #stop-btn {
